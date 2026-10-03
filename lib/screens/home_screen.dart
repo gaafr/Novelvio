@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: Text('$points points = \$${(points / 1000).toStringAsFixed(2)}'),
             ),
           ),
-          const Card(child: ListTile(title: Text('Minimum withdrawal'), subtitle: Text('\$1.00'))),
+          Card(child: ListTile(title: Text('Minimum withdrawal'), subtitle: Text('\$1.00'))),
           const Card(child: ListTile(title: Text('PayPal'), subtitle: Text('After verification'))),
           const Card(child: ListTile(title: Text('USDT'), subtitle: Text('After verification'))),
           ElevatedButton(onPressed: points >= 1000 ? () {} : null, child: const Text('Request withdrawal')),
