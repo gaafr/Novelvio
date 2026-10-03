@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Card(child: ListTile(title: Text('Minimum withdrawal'), subtitle: Text('\$1.00'))),
           Card(child: ListTile(title: const Text('PayPal'), subtitle: const Text('After verification'))),
-          const Card(child: ListTile(title: Text('USDT'), subtitle: Text('After verification'))),
+          Card(child: ListTile(title: const Text('USDT'), subtitle: const Text('After verification'))),
           ElevatedButton(onPressed: points >= 1000 ? () {} : null, child: const Text('Request withdrawal')),
         ],
       );
