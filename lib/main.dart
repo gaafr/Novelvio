@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'app/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: Initialize Supabase here
+  // TODO: Initialize Supabase with proper environment configuration
   // await Supabase.initialize(
-  //   url: 'YOUR_SUPABASE_URL',
-  //   anonKey: 'YOUR_SUPABASE_ANON_KEY',
+  //   url: String.fromEnvironment('SUPABASE_URL'),
+  //   anonKey: String.fromEnvironment('SUPABASE_ANON_KEY'),
   // );
   runApp(const NovelvioApp());
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'theme.dart';
+import '../screens/home/home_screen.dart';
 
 class NovelvioApp extends StatelessWidget {
   const NovelvioApp({super.key});
@@ -9,29 +13,12 @@ class NovelvioApp extends StatelessWidget {
       title: 'Novelvio',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('ar'),
-        Locale('en'),
-        Locale('de'),
-        Locale('fr'),
-        Locale('es'),
-        Locale('it'),
-        Locale('tr'),
-        Locale('ru'),
-        Locale('pt'),
-        Locale('hi'),
-        Locale('id'),
-        Locale('zh'),
-        Locale('ja'),
-        Locale('ko'),
-        Locale('nl'),
-        Locale('pl'),
-        Locale('uk'),
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.lightTheme,
       home: const HomeScreen(),
     );
