@@ -1,0 +1,13 @@
+{
+  "@@locale": "zh",
+  "appTitle": "Novelvio",
+  "home": "首页",
+  "tasks": "任务",
+  "wallet": "钱包",
+  "account": "账户",
+  "earnRewards": "赚取奖励",
+  "watchAndEarn": "观看并赚钱",
+  "completeTask": "完成任务",
+  "inviteFriends": "邀请朋友",
+  "shopAndEarn": "购物并赚钱"
+}

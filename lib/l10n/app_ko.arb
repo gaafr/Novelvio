@@ -1,0 +1,13 @@
+{
+  "@@locale": "ko",
+  "appTitle": "Novelvio",
+  "home": "홈",
+  "tasks": "작업",
+  "wallet": "지갑",
+  "account": "계정",
+  "earnRewards": "보상 적립",
+  "watchAndEarn": "시청하고 적립",
+  "completeTask": "작업 완료",
+  "inviteFriends": "친구 초대",
+  "shopAndEarn": "쇼핑하고 적립"
+}

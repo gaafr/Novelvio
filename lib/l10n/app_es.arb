@@ -1,0 +1,13 @@
+{
+  "@@locale": "es",
+  "appTitle": "Novelvio",
+  "home": "Inicio",
+  "tasks": "Tareas",
+  "wallet": "Cartera",
+  "account": "Cuenta",
+  "earnRewards": "Gana recompensas",
+  "watchAndEarn": "Ver y ganar",
+  "completeTask": "Completa una tarea",
+  "inviteFriends": "Invitar amigos",
+  "shopAndEarn": "Comprar y ganar"
+}
