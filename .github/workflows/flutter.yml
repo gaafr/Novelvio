@@ -34,7 +34,7 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/novelvio-upload-key.jks
+          printf '%s' "$KEYSTORE_BASE64" | tr -d '\r\n[:space:]' | base64 --decode --ignore-garbage > android/novelvio-upload-key.jks
           cat > android/key.properties <<EOF
           storePassword=$KEYSTORE_PASSWORD
           keyPassword=$KEYSTORE_PASSWORD
