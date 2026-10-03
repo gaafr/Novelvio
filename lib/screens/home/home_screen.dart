@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
           walletProvider.addPoints(reward);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('+ $reward ${AppLocalizations.of(context)!.points}'),
+              content: Text('+ $reward ${AppLocalizations.of(context).points}'),
               duration: const Duration(seconds: 1),
             ),
           );
