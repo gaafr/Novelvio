@@ -29,6 +29,57 @@ jobs:
       - name: Generate localization
         run: flutter gen-l10n
 
+      - name: Configure Android release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/novelvio-upload-key.jks
+          cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEYSTORE_PASSWORD
+          keyAlias=novelvio
+          storeFile=../novelvio-upload-key.jks
+          EOF
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/build.gradle.kts")
+          s = p.read_text()
+          if "java.util.Properties" not in s:
+              s = "import java.io.FileInputStream\nimport java.util.Properties\n\n" + s
+          marker = "android {"
+          if marker not in s:
+              raise SystemExit("android block not found")
+          if "val keystoreProperties = Properties()" not in s:
+              block = '''val keystoreProperties = Properties()
+          val keystorePropertiesFile = rootProject.file("key.properties")
+          if (keystorePropertiesFile.exists()) {
+              keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+          }
+
+          '''
+              s = s.replace(marker, block + marker, 1)
+          if 'signingConfigs.getByName("release")' not in s:
+              signing = '''    signingConfigs {
+                  create("release") {
+                      keyAlias = keystoreProperties["keyAlias"] as String
+                      keyPassword = keystoreProperties["keyPassword"] as String
+                      storeFile = file(keystoreProperties["storeFile"] as String)
+                      storePassword = keystoreProperties["storePassword"] as String
+                  }
+              }
+
+          '''
+              if "    buildTypes {" not in s:
+                  raise SystemExit("buildTypes block not found")
+              s = s.replace("    buildTypes {", signing + "    buildTypes {", 1)
+              s = s.replace(
+                  'signingConfig = signingConfigs.getByName("debug")',
+                  'signingConfig = signingConfigs.getByName("release")'
+              )
+          p.write_text(s)
+          PY
+
       - name: Analyze
         run: flutter analyze
 
