@@ -1,0 +1,1 @@
+-- 1000 points = 1 USD; minimum withdrawal = 1 USD. Process payouts server-side only.

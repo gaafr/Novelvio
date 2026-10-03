@@ -1,0 +1,15 @@
+create table if not exists public.app_settings (key text primary key, value jsonb not null default '{}'::jsonb);
+insert into public.app_settings(key,value) values ('economy','{"points_per_usd":1000,"minimum_withdrawal_usd":1}') on conflict (key) do nothing;
+create table if not exists public.profiles (id uuid primary key references auth.users(id) on delete cascade, display_name text, referral_code text unique, created_at timestamptz default now());
+create table if not exists public.wallets (user_id uuid primary key references public.profiles(id) on delete cascade, points bigint not null default 0, updated_at timestamptz default now());
+create table if not exists public.tasks (id bigint generated always as identity primary key, title text not null, reward_points bigint not null default 0, active boolean not null default true, created_at timestamptz default now());
+create table if not exists public.transactions (id bigint generated always as identity primary key, user_id uuid references public.profiles(id) on delete cascade, points bigint not null, type text not null, description text, created_at timestamptz default now());
+create table if not exists public.referrals (id bigint generated always as identity primary key, inviter_id uuid references public.profiles(id) on delete cascade, invited_id uuid references public.profiles(id) on delete cascade, created_at timestamptz default now(), unique(inviter_id, invited_id));
+create table if not exists public.withdrawals (id bigint generated always as identity primary key, user_id uuid references public.profiles(id) on delete cascade, amount_usd numeric(12,2) not null, method text not null, destination text not null, status text not null default 'pending', created_at timestamptz default now());
+create table if not exists public.fraud_flags (id bigint generated always as identity primary key, user_id uuid references public.profiles(id) on delete cascade, reason text not null, status text not null default 'open', created_at timestamptz default now());
+alter table public.profiles enable row level security;
+alter table public.wallets enable row level security;
+alter table public.transactions enable row level security;
+alter table public.referrals enable row level security;
+alter table public.withdrawals enable row level security;
+alter table public.fraud_flags enable row level security;
