@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
+    final loc = AppLocalizations.of(context);
     final walletProvider = Provider.of<WalletProvider>(context);
     
     final pages = [
