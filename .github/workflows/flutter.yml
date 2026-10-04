@@ -43,6 +43,14 @@ jobs:
           from pathlib import Path
 
           value = "".join(os.environ["KEYSTORE_BASE64"].split())
+          print(f"KEYSTORE_BASE64 length: {len(value)}")
+          print(f"KEYSTORE_BASE64 length mod 4: {len(value) % 4}")
+          allowed = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
+          bad = [(i, ord(ch)) for i, ch in enumerate(value) if ch not in allowed]
+          print(f"Invalid character count: {len(bad)}")
+          if bad:
+              print(f"First invalid character position/code: {bad[0]}")
+              raise SystemExit("KEYSTORE_BASE64 contains invalid characters")
           value += "=" * (-len(value) % 4)
           try:
               data = base64.b64decode(value, validate=True)
