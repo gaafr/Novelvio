@@ -39,9 +39,10 @@ jobs:
 
           python3 - <<'PY'
 import base64
+import os
 from pathlib import Path
 
-value = "".join(${KEYSTORE_BASE64}.split())
+value = "".join(os.environ["KEYSTORE_BASE64"].split())
 value += "=" * (-len(value) % 4)
 try:
     data = base64.b64decode(value, validate=True)
