@@ -37,7 +37,25 @@ jobs:
           test -n "$KEY_ALIAS"
           test -n "$KEY_PASSWORD"
 
-          echo "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          python3 - <<'PY'
+import base64
+from pathlib import Path
+
+value = "".join(${KEYSTORE_BASE64}.split())
+value += "=" * (-len(value) % 4)
+try:
+    data = base64.b64decode(value, validate=True)
+except Exception as e:
+    raise SystemExit(f"Invalid KEYSTORE_BASE64 secret: {e}")
+
+if len(data) < 100:
+    raise SystemExit("Decoded keystore is unexpectedly small")
+
+Path("android/upload-keystore.jks").write_bytes(data)
+PY
+
+          keytool -list -keystore android/upload-keystore.jks -storepass "${KEYSTORE_PASSWORD}" -alias "${KEY_ALIAS}" >/dev/null
+          echo "Keystore decoded and verified successfully."
 
           cat > android/key.properties <<EOF
           storePassword=$KEYSTORE_PASSWORD
