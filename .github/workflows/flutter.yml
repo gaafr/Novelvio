@@ -24,6 +24,101 @@ jobs:
       - name: Generate Android platform files
         run: flutter create --platforms=android --project-name novelvio .
 
+      - name: Configure Android release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -e
+          test -n "$KEYSTORE_BASE64"
+          test -n "$KEYSTORE_PASSWORD"
+          test -n "$KEY_ALIAS"
+          test -n "$KEY_PASSWORD"
+
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+
+          cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          if Path("android/app/build.gradle.kts").exists():
+              path = Path("android/app/build.gradle.kts")
+              text = path.read_text()
+
+              if "import java.util.Properties" not in text:
+                  text = "import java.util.Properties\nimport java.io.FileInputStream\n\n" + text
+
+              loader = '''val keystoreProperties = Properties()
+          val keystorePropertiesFile = rootProject.file("key.properties")
+          if (keystorePropertiesFile.exists()) {
+              keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+          }
+
+          '''
+              if "val keystoreProperties = Properties()" not in text:
+                  text = text.replace("android {", loader + "android {", 1)
+
+              signing = '''        signingConfigs {
+                  create("release") {
+                      keyAlias = keystoreProperties.getProperty("keyAlias")
+                      keyPassword = keystoreProperties.getProperty("keyPassword")
+                      storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                      storePassword = keystoreProperties.getProperty("storePassword")
+                  }
+              }
+          '''
+              if 'create("release")' not in text:
+                  text = text.replace("    buildTypes {", signing + "    buildTypes {", 1)
+
+              text = text.replace(
+                  'signingConfig = signingConfigs.getByName("debug")',
+                  'signingConfig = signingConfigs.getByName("release")'
+              )
+              path.write_text(text)
+          else:
+              path = Path("android/app/build.gradle")
+              text = path.read_text()
+
+              if "import java.util.Properties" not in text:
+                  text = "import java.util.Properties\nimport java.io.FileInputStream\n\n" + text
+
+              loader = '''def keystoreProperties = new Properties()
+          def keystorePropertiesFile = rootProject.file('key.properties')
+          if (keystorePropertiesFile.exists()) {
+              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+          }
+
+          '''
+              if "def keystoreProperties = new Properties()" not in text:
+                  text = text.replace("android {", loader + "android {", 1)
+
+              signing = '''        signingConfigs {
+                  release {
+                      keyAlias = keystoreProperties['keyAlias']
+                      keyPassword = keystoreProperties['keyPassword']
+                      storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                      storePassword = keystoreProperties['storePassword']
+                  }
+              }
+          '''
+              if "        signingConfigs {" not in text:
+                  text = text.replace("    buildTypes {", signing + "    buildTypes {", 1)
+
+              text = text.replace(
+                  "signingConfig = signingConfigs.debug",
+                  "signingConfig = signingConfigs.release"
+              )
+              path.write_text(text)
+          PY
+
       - name: Install dependencies
         run: flutter pub get
 
