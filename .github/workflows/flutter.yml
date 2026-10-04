@@ -63,7 +63,12 @@ jobs:
           Path("android/upload-keystore.jks").write_bytes(data)
           PY
 
-          keytool -list -keystore android/upload-keystore.jks -storepass "${KEYSTORE_PASSWORD}" -alias "${KEY_ALIAS}" >/dev/null
+          echo "Decoded keystore size: $(stat -c%s android/upload-keystore.jks) bytes"
+          if ! keytool -list -keystore android/upload-keystore.jks -storepass "${KEYSTORE_PASSWORD}" -alias "${KEY_ALIAS}" 2> /tmp/keytool-error.txt; then
+            echo "Keystore verification failed. keytool output:"
+            cat /tmp/keytool-error.txt
+            exit 1
+          fi
           echo "Keystore decoded and verified successfully."
 
           cat > android/key.properties <<EOF
