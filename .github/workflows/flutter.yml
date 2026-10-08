@@ -18,6 +18,17 @@ jobs:
           cache: true
       - name: Generate Android project files
         run: flutter create --platforms=android --project-name novelvio .
+      - name: Configure AdMob test application ID
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/AndroidManifest.xml')
+          s=p.read_text()
+          marker='</application>'
+          meta='    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>\n  '
+          s=s.replace(marker, meta+marker)
+          p.write_text(s)
+          PY
       - name: Install dependencies
         run: flutter pub get
       - name: Generate localization
