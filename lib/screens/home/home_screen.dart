@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/wallet_provider.dart';
+import '../../services/rewarded_ad_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -185,8 +186,19 @@ class _DailyRewards extends StatelessWidget {
   }
 }
 
-class _WatchCard extends StatelessWidget {
+class _WatchCard extends StatefulWidget {
   const _WatchCard();
+  @override State<_WatchCard> createState() => _WatchCardState();
+}
+
+class _WatchCardState extends State<_WatchCard> {
+  bool busy = false;
+  String? message;
+  Future<void> watch() async {
+    setState(() => busy = true);
+    final result = await RewardedAdService().show();
+    if (mounted) setState(() { busy = false; message = result; });
+  }
   @override
   Widget build(BuildContext context) => Card(
     child: Container(
@@ -201,8 +213,8 @@ class _WatchCard extends StatelessWidget {
         ])),
         FilledButton(
           style: FilledButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.deepOrange),
-          onPressed: () {},
-          child: const Text('خذ'),
+          onPressed: busy ? null : watch,
+          child: Text(busy ? '...' : 'شاهد'),
         ),
       ]),
     ),
