@@ -1,178 +1,33 @@
 name: Flutter CI
-
 on:
   workflow_dispatch:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
   analyze-and-build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
-      - name: Generate Android platform files
-        run: flutter create --platforms=android --project-name novelvio .
-
-      - name: Configure Android release signing
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          set -e
-          test -n "$KEYSTORE_BASE64"
-          test -n "$KEYSTORE_PASSWORD"
-          test -n "$KEY_ALIAS"
-          test -n "$KEY_PASSWORD"
-
-          python3 - <<'PY'
-          import base64
-          import os
-          from pathlib import Path
-
-          value = "".join(os.environ["KEYSTORE_BASE64"].split())
-          print(f"KEYSTORE_BASE64 length: {len(value)}")
-          print(f"KEYSTORE_BASE64 length mod 4: {len(value) % 4}")
-          allowed = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
-          bad = [(i, ord(ch)) for i, ch in enumerate(value) if ch not in allowed]
-          print(f"Invalid character count: {len(bad)}")
-          if bad:
-              print(f"First invalid character position/code: {bad[0]}")
-              raise SystemExit("KEYSTORE_BASE64 contains invalid characters")
-          value += "=" * (-len(value) % 4)
-          try:
-              data = base64.b64decode(value, validate=True)
-          except Exception as e:
-              raise SystemExit(f"Invalid KEYSTORE_BASE64 secret: {e}")
-
-          if len(data) < 100:
-              raise SystemExit("Decoded keystore is unexpectedly small")
-
-          Path("android/upload-keystore.jks").write_bytes(data)
-          PY
-
-          echo "Decoded keystore size: $(stat -c%s android/upload-keystore.jks) bytes"
-          if ! keytool -list -keystore android/upload-keystore.jks -storepass "${KEYSTORE_PASSWORD}" -alias "${KEY_ALIAS}" 2> /tmp/keytool-error.txt; then
-            echo "Keystore verification failed. keytool output:"
-            cat /tmp/keytool-error.txt
-            exit 1
-          fi
-          echo "Keystore decoded and verified successfully."
-
-          cat > android/key.properties <<EOF
-          storePassword=$KEYSTORE_PASSWORD
-          keyPassword=$KEY_PASSWORD
-          keyAlias=$KEY_ALIAS
-          storeFile=upload-keystore.jks
-          EOF
-
-          python3 - <<'PY'
-          from pathlib import Path
-
-          if Path("android/app/build.gradle.kts").exists():
-              path = Path("android/app/build.gradle.kts")
-              text = path.read_text()
-
-              if "import java.util.Properties" not in text:
-                  text = "import java.util.Properties\nimport java.io.FileInputStream\n\n" + text
-
-              loader = '''val keystoreProperties = Properties()
-          val keystorePropertiesFile = rootProject.file("key.properties")
-          if (keystorePropertiesFile.exists()) {
-              keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-          }
-
-          '''
-              if "val keystoreProperties = Properties()" not in text:
-                  text = text.replace("android {", loader + "android {", 1)
-
-              signing = '''        signingConfigs {
-                  create("release") {
-                      keyAlias = keystoreProperties.getProperty("keyAlias")
-                      keyPassword = keystoreProperties.getProperty("keyPassword")
-                      storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-                      storePassword = keystoreProperties.getProperty("storePassword")
-                  }
-              }
-          '''
-              if 'create("release")' not in text:
-                  text = text.replace("    buildTypes {", signing + "    buildTypes {", 1)
-
-              text = text.replace(
-                  'signingConfig = signingConfigs.getByName("debug")',
-                  'signingConfig = signingConfigs.getByName("release")'
-              )
-              path.write_text(text)
-          else:
-              path = Path("android/app/build.gradle")
-              text = path.read_text()
-
-              if "import java.util.Properties" not in text:
-                  text = "import java.util.Properties\nimport java.io.FileInputStream\n\n" + text
-
-              loader = '''def keystoreProperties = new Properties()
-          def keystorePropertiesFile = rootProject.file('key.properties')
-          if (keystorePropertiesFile.exists()) {
-              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-          }
-
-          '''
-              if "def keystoreProperties = new Properties()" not in text:
-                  text = text.replace("android {", loader + "android {", 1)
-
-              signing = '''        signingConfigs {
-                  release {
-                      keyAlias = keystoreProperties['keyAlias']
-                      keyPassword = keystoreProperties['keyPassword']
-                      storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-                      storePassword = keystoreProperties['storePassword']
-                  }
-              }
-          '''
-              if "        signingConfigs {" not in text:
-                  text = text.replace("    buildTypes {", signing + "    buildTypes {", 1)
-
-              text = text.replace(
-                  "signingConfig = signingConfigs.debug",
-                  "signingConfig = signingConfigs.release"
-              )
-              path.write_text(text)
-          PY
-
       - name: Install dependencies
         run: flutter pub get
-
       - name: Generate localization
         run: flutter gen-l10n
-
       - name: Analyze
         run: flutter analyze
-
       - name: Test
         run: flutter test
-
-      - name: Build Android APK
-        run: flutter build apk --release
-
-      - name: Build Android App Bundle
-        run: flutter build appbundle --release
-
-      - name: Upload Android artifacts
+      - name: Build debug APK
+        run: flutter build apk --debug
+      - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: novelvio-android-release
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+          name: novelvio-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
