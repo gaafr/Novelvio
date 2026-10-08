@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/services/supabase_service.dart';
 
 class RewardedAdService {
