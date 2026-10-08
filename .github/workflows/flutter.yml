@@ -29,6 +29,16 @@ jobs:
           s=s.replace(marker, meta+marker)
           p.write_text(s)
           PY
+      - name: Prepare Google Play Android settings
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/build.gradle.kts')
+          s=p.read_text()
+          s=s.replace('targetSdk = flutter.targetSdkVersion', 'targetSdk = 36')
+          s=s.replace('compileSdk = flutter.compileSdkVersion', 'compileSdk = 36')
+          p.write_text(s)
+          PY
       - name: Install dependencies
         run: flutter pub get
       - name: Generate localization
