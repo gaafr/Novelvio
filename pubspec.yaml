@@ -1,10 +1,9 @@
 name: novelvio
-description: Novelvio global rewards application
+description: Novelvio global rewards and AI video application
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.0+2
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-
+  sdk: ">=3.3.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -13,16 +12,11 @@ dependencies:
   intl: ^0.20.3
   provider: ^6.1.0
   logging: ^1.2.0
-
+  supabase_flutter: ^2.10.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-
+  flutter_lints: ^6.0.0
 flutter:
   uses-material-design: true
   generate: true
-  assets:
-    - assets/images/
-    - assets/icons/
-    - assets/fonts/
