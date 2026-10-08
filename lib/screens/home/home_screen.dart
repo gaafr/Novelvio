@@ -53,7 +53,7 @@ class _TopBalance extends StatelessWidget {
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
         child: Column(children: [
           const Text('PayPal', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Color(0xFF1769AA))),
-          Text('\, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF00A94F))),
+          Text('\${points / 1000}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF00A94F))),
         ]),
       ),
       const SizedBox(width: 12),
@@ -84,7 +84,7 @@ class _Ticker extends StatelessWidget {
     height: 38,
     alignment: Alignment.center,
     decoration: BoxDecoration(color: const Color(0xFF19C96B), borderRadius: BorderRadius.circular(20)),
-    child: const Text('• نجح سحب $4.08  • نجح سحب $4.03  • نجح سحب $2.25', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+    child: const Text('• نجح سحب \$4.08  • نجح سحب \$4.03  • نجح سحب \$2.25', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
   );
 }
 
@@ -113,7 +113,7 @@ class _CashCard extends StatelessWidget {
       decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF08C65A), Color(0xFF00A948)]), borderRadius: BorderRadius.circular(22)),
       child: Column(children: [
         const Text('رصيد الكاش', style: TextStyle(color: Colors.white, fontSize: 18)),
-        Text('\, style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: FontWeight.w900)),
+        Text('\${usd.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         Container(
           height: 66,
