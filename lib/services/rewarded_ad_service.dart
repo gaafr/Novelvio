@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/services/supabase_service.dart';
@@ -43,7 +44,7 @@ class RewardedAdService {
       );
     }
 
-    String? result;
+    final completer = Completer<String?>();
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdFailedToShowFullScreenContent: (ad, _) {
         ad.dispose();
@@ -59,7 +60,7 @@ class RewardedAdService {
       onUserEarnedReward: (adWithoutView, reward) async {
         final client = SupabaseService.client;
         if (client == null || user == null) {
-          result = 'شاهدت إعلانًا تجريبيًا. سجّل الدخول لاحتساب المكافأة.';
+          if (!completer.isCompleted) completer.complete('شاهدت إعلانًا تجريبيًا. سجّل الدخول لاحتساب المكافأة.');
           return;
         }
         try {
@@ -68,12 +69,12 @@ class RewardedAdService {
             'p_event_id': DateTime.now().microsecondsSinceEpoch.toString(),
             'p_reward_points': reward.amount.toInt(),
           });
-          result = 'تمت إضافة المكافأة إلى رصيدك.';
+          if (!completer.isCompleted) completer.complete('تمت إضافة المكافأة إلى رصيدك.');
         } catch (e) {
-          result = 'تمت مشاهدة الإعلان، لكن تعذر تحديث الرصيد الآن.';
+          if (!completer.isCompleted) completer.complete('تمت مشاهدة الإعلان، لكن تعذر تحديث الرصيد الآن.');
         }
       },
     );
-    return result;
+    return completer.future;
   }
 }
