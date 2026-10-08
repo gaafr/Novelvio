@@ -22,7 +22,7 @@ class _VideoScreenState extends State<VideoScreen> {
     setState(() => busy = true);
     try {
       final r = await c.functions.invoke('generate-video', body: {'prompt': prompt.text.trim(), 'duration_seconds': seconds, 'quality': quality});
-      if (mounted) setState(() => status = 'تم إنشاء الطلب: ' + r.data.toString());
+      if (mounted) setState(() => status = 'تم إنشاء الطلب: ${r.data}');
     } catch (e) {
       if (mounted) setState(() => status = e.toString());
     } finally {
