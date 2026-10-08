@@ -7,6 +7,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(NovelvioApp), findsOneWidget);
-    expect(find.text('تسجيل الدخول'), findsOneWidget);
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.byType(TextField), findsNWidgets(2));
   });
 }
