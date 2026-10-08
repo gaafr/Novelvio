@@ -48,10 +48,12 @@ class RewardedAdService {
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdFailedToShowFullScreenContent: (ad, _) {
         ad.dispose();
+        if (!completer.isCompleted) completer.complete('تعذر عرض الإعلان الآن، حاول مرة أخرى.');
         preload();
       },
       onAdDismissedFullScreenContent: (ad) {
         ad.dispose();
+        if (!completer.isCompleted) completer.complete('تم إغلاق الإعلان.');
         preload();
       },
     );
