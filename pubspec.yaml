@@ -1,7 +1,7 @@
 name: novelvio
 description: Novelvio global rewards and AI video application
 publish_to: "none"
-version: 1.0.0+3
+version: 1.0.0+4
 environment:
   sdk: ">=3.3.0 <4.0.0"
 dependencies:
@@ -13,7 +13,7 @@ dependencies:
   provider: ^6.1.0
   logging: ^1.2.0
   supabase_flutter: ^2.10.3
-  google_mobile_ads: ^6.0.0
+  google_mobile_ads: ^9.1.0
   video_player: ^2.10.0
 dev_dependencies:
   flutter_test:
