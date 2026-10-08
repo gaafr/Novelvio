@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../providers/wallet_provider.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/video/video_screen.dart';
-import '../screens/wallet/wallet_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/auth/auth_screen.dart';
 import '../screens/settings/settings_screen.dart';
