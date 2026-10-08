@@ -60,7 +60,7 @@ class _TopBalance extends StatelessWidget {
       Expanded(child: Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           const Text('In 01:36:36', style: TextStyle(color: Colors.white, fontSize: 13)),
-          Text(points.toString() + ' 🪙', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          Text('$points 🪙', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ]),
         const SizedBox(height: 8),
         ClipRRect(
@@ -167,7 +167,7 @@ class _DailyRewards extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(color: i == 1 ? const Color(0xFF00C853) : const Color(0xFFF1F3F5), borderRadius: BorderRadius.circular(14)),
               child: Column(children: [
-                Text('Day ' + (i + 1).toString(), style: TextStyle(color: i == 1 ? Colors.white : Colors.grey.shade700, fontSize: 11)),
+                Text('Day ${i + 1}', style: TextStyle(color: i == 1 ? Colors.white : Colors.grey.shade700, fontSize: 11)),
                 const SizedBox(height: 5),
                 const Text('🪙', style: TextStyle(fontSize: 22)),
                 Text(rewards[i], style: TextStyle(fontWeight: FontWeight.w800, color: i == 1 ? Colors.white : Colors.black87)),
