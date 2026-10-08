@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/app.dart';
-
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: Initialize Supabase with environment variables
-  // String supabaseUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
-  // String supabaseKey = String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
-  // if (supabaseUrl.isNotEmpty && supabaseKey.isNotEmpty) {
-  //   await Supabase.initialize(
-  //     url: supabaseUrl,
-  //     anonKey: supabaseKey,
-  //   );
-  // }
+  const url=String.fromEnvironment('SUPABASE_URL');
+  const key=String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
+  if(url.isNotEmpty&&key.isNotEmpty){await Supabase.initialize(url:url,publishableKey:key);}
   runApp(const NovelvioApp());
 }
