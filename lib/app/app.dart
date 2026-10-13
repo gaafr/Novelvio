@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/wallet_provider.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/video/video_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/auth/auth_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -30,7 +29,7 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int index = 1;
-  final pages = const [ProfileScreen(), HomeScreen(), VideoScreen()];
+  final pages = const [ProfileScreen(), HomeScreen()];
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -43,7 +42,6 @@ class _MainShellState extends State<MainShell> {
       destinations: const [
         NavigationDestination(icon: Icon(Icons.account_circle_outlined), selectedIcon: Icon(Icons.account_circle), label: 'أنا'),
         NavigationDestination(icon: Icon(Icons.card_giftcard_outlined), selectedIcon: Icon(Icons.card_giftcard), label: 'مكافآت'),
-        NavigationDestination(icon: Icon(Icons.ondemand_video_outlined), selectedIcon: Icon(Icons.ondemand_video), label: 'فيديو'),
       ],
     ),
   );
