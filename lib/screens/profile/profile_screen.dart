@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/services/supabase_service.dart';
+import '../../providers/wallet_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,6 +12,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final u = SupabaseService.client?.auth.currentUser;
+    final wallet = context.watch<WalletProvider>();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: ListView(
@@ -30,9 +33,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ]),
               const SizedBox(height: 12),
               const Text('رصيد الكاش', style: TextStyle(color: Colors.white70)),
-              const Text('\$0.02 💵', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w900)),
+              Text('\${wallet.usd.toStringAsFixed(2)} 💵', style: const TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 4),
+              Text('${wallet.points} نقطة', style: const TextStyle(color: Colors.white70, fontSize: 14)),
               const SizedBox(height: 8),
-              const LinearProgressIndicator(value: .12, minHeight: 8, backgroundColor: Colors.white30, valueColor: AlwaysStoppedAnimation(Colors.orange)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: (wallet.points % 1000) / 1000,
+                  minHeight: 8,
+                  backgroundColor: Colors.white30,
+                  valueColor: const AlwaysStoppedAnimation(Colors.orange),
+                ),
+              ),
             ]),
           ),
           const SizedBox(height: 14),
