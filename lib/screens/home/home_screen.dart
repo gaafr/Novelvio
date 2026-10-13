@@ -84,7 +84,7 @@ class _Ticker extends StatelessWidget {
     height: 38,
     alignment: Alignment.center,
     decoration: BoxDecoration(color: const Color(0xFF19C96B), borderRadius: BorderRadius.circular(20)),
-    child: const Text('• نجح سحب \$4.08  • نجح سحب \$4.03  • نجح سحب \$2.25', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+    child: const Text('اكسب النقاط من الإعلانات والمهام المتاحة', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
   );
 }
 
